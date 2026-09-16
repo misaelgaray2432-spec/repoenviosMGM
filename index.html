@@ -3,78 +3,134 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Gestión de Envíos</title>
+    <title>MGM Envíos | Gestión logística</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header class="topbar">
-    <div>
-        <h1>Gestión de Envíos</h1>
-        <p>Administra destinatarios, direcciones y descripciones.</p>
-    </div>
+<header class="site-header">
+    <a class="brand" href="index.html" aria-label="MGM Envíos">
+        <span class="brand-mark">MGM</span>
+        <span>
+            <strong>Envíos</strong>
+            <small>Control logístico</small>
+        </span>
+    </a>
+    <nav class="header-actions" aria-label="Acciones principales">
+        <a class="nav-link" href="#registro">Registro</a>
+        <a class="btn secondary" href="#envios">Ver envíos</a>
+    </nav>
 </header>
+
+<section class="hero">
+    <img
+        src="https://images.unsplash.com/photo-1580674285054-bed31e145f59?auto=format&fit=crop&w=1800&q=82"
+        alt="Cajas de envío organizadas dentro de una van de reparto"
+        class="hero-image"
+    >
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <p class="eyebrow">Operación de entregas</p>
+        <h1>Gestiona tus envíos con una vista clara, rápida y profesional.</h1>
+        <p class="hero-copy">Registra destinatarios, direcciones e instrucciones de entrega desde un panel diseñado para trabajo diario.</p>
+        <div class="hero-actions">
+            <a class="btn primary" href="#registro">Nuevo envío</a>
+            <a class="btn ghost" href="#envios">Consultar registros</a>
+        </div>
+    </div>
+</section>
 
 <main class="container">
     <div id="alerta" class="alert hidden"></div>
 
-    <section class="card">
-        <div class="card-title">
-            <h2 id="form-title">Nuevo envío</h2>
-            <button id="cancelar" class="btn secondary hidden" type="button">Cancelar</button>
-        </div>
-
-        <form id="envio-form" class="form-grid">
-            <input id="envio-id" type="hidden">
-
-            <label>
-                Destinatario
-                <input id="destinatario" type="text" maxlength="150" required
-                       placeholder="Nombre del destinatario">
-            </label>
-
-            <label>
-                Dirección
-                <input id="direccion" type="text" maxlength="255" required
-                       placeholder="Dirección de entrega">
-            </label>
-
-            <label class="full">
-                Descripción
-                <textarea id="descripcion" rows="4" required
-                          placeholder="Describe el contenido o las instrucciones del envío"></textarea>
-            </label>
-
-            <div class="full actions">
-                <button id="guardar" class="btn primary" type="submit">Registrar envío</button>
-            </div>
-        </form>
+    <section class="stats-grid" aria-label="Resumen de operación">
+        <article class="stat-card">
+            <span>Total registrados</span>
+            <strong id="stat-total">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Último ingreso</span>
+            <strong id="stat-fecha">Sin datos</strong>
+        </article>
+        <article class="stat-card accent">
+            <span>Estado del panel</span>
+            <strong>Activo</strong>
+        </article>
     </section>
 
-    <section class="card">
-        <div class="card-title">
-            <h2>Envíos registrados</h2>
-            <span id="contador" class="count">0 registro(s)</span>
-        </div>
+    <section class="workspace">
+        <article id="registro" class="panel form-panel">
+            <div class="section-heading">
+                <p class="eyebrow">Registro</p>
+                <div class="title-row">
+                    <h2 id="form-title">Nuevo envío</h2>
+                    <button id="cancelar" class="btn secondary hidden" type="button">Cancelar</button>
+                </div>
+            </div>
 
-        <div id="estado-vacio" class="empty">No hay envíos registrados todavía.</div>
+            <form id="envio-form" class="form-grid">
+                <input id="envio-id" type="hidden">
 
-        <div id="tabla-wrap" class="table-wrap hidden">
-            <table>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Destinatario</th>
-                    <th>Dirección</th>
-                    <th>Descripción</th>
-                    <th>Fecha</th>
-                    <th>Acciones</th>
-                </tr>
-                </thead>
-                <tbody id="envios-body"></tbody>
-            </table>
-        </div>
+                <label>
+                    Destinatario
+                    <input id="destinatario" type="text" maxlength="150" required
+                           placeholder="Nombre del destinatario">
+                </label>
+
+                <label>
+                    Dirección
+                    <input id="direccion" type="text" maxlength="255" required
+                           placeholder="Dirección de entrega">
+                </label>
+
+                <label class="full">
+                    Descripción
+                    <textarea id="descripcion" rows="5" required
+                              placeholder="Contenido, referencias o instrucciones del envío"></textarea>
+                </label>
+
+                <div class="full actions">
+                    <button id="guardar" class="btn primary" type="submit">Registrar envío</button>
+                </div>
+            </form>
+        </article>
+
+        <article id="envios" class="panel table-panel">
+            <div class="section-heading">
+                <p class="eyebrow">Base de datos</p>
+                <div class="title-row">
+                    <h2>Envíos registrados</h2>
+                    <span id="contador" class="count">0 registro(s)</span>
+                </div>
+            </div>
+
+            <div id="estado-vacio" class="empty">
+                <strong>No hay envíos registrados todavía.</strong>
+                <span>Cuando agregues el primero, aparecerá aquí para editarlo o eliminarlo.</span>
+            </div>
+
+            <div id="tabla-wrap" class="table-wrap hidden">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Destinatario</th>
+                        <th>Dirección</th>
+                        <th>Descripción</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody id="envios-body"></tbody>
+                </table>
+            </div>
+        </article>
     </section>
 </main>
+
+<footer class="site-footer">
+    <span>MGM Envíos</span>
+    <span>Imagen por <a href="https://unsplash.com/@purzlbaum" target="_blank" rel="noreferrer">Claudio Schwarz</a> en <a href="https://unsplash.com/" target="_blank" rel="noreferrer">Unsplash</a>.</span>
+</footer>
 
 <script>
 const apiUrl = 'api.php';
@@ -91,6 +147,8 @@ const contador = document.getElementById('contador');
 const estadoVacio = document.getElementById('estado-vacio');
 const tablaWrap = document.getElementById('tabla-wrap');
 const enviosBody = document.getElementById('envios-body');
+const statTotal = document.getElementById('stat-total');
+const statFecha = document.getElementById('stat-fecha');
 
 let envios = [];
 
@@ -114,6 +172,21 @@ function escapar(valor) {
     }[caracter]));
 }
 
+function formatearFecha(valor) {
+    if (!valor) return 'Sin datos';
+
+    const fecha = new Date(String(valor).replace(' ', 'T'));
+    if (Number.isNaN(fecha.getTime())) {
+        return valor;
+    }
+
+    return new Intl.DateTimeFormat('es-CO', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+    }).format(fecha);
+}
+
 function resetearFormulario() {
     envioId.value = '';
     form.reset();
@@ -124,16 +197,18 @@ function resetearFormulario() {
 
 function pintarEnvios() {
     contador.textContent = `${envios.length} registro(s)`;
+    statTotal.textContent = envios.length;
+    statFecha.textContent = envios.length ? formatearFecha(envios[0].creado_en) : 'Sin datos';
     estadoVacio.classList.toggle('hidden', envios.length > 0);
     tablaWrap.classList.toggle('hidden', envios.length === 0);
 
     enviosBody.innerHTML = envios.map(envio => `
         <tr>
-            <td>${Number(envio.id)}</td>
+            <td><span class="id-badge">#${Number(envio.id)}</span></td>
             <td><strong>${escapar(envio.destinatario)}</strong></td>
             <td>${escapar(envio.direccion)}</td>
             <td>${escapar(envio.descripcion).replace(/\n/g, '<br>')}</td>
-            <td>${escapar(envio.creado_en)}</td>
+            <td>${escapar(formatearFecha(envio.creado_en))}</td>
             <td class="actions-cell">
                 <button class="btn small secondary" type="button" data-editar="${Number(envio.id)}">Editar</button>
                 <button class="btn small danger" type="button" data-eliminar="${Number(envio.id)}">Eliminar</button>
