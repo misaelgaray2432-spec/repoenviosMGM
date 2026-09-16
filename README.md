@@ -1,4 +1,4 @@
-# RepoEnvios - PHP + MySQL
+# RepoEnvios - HTML + PHP + MySQL
 
 Aplicativo web sencillo para gestionar envíos.
 
@@ -11,6 +11,7 @@ Aplicativo web sencillo para gestionar envíos.
 - Validación básica de campos.
 - Consultas preparadas con PDO.
 - Creación automática de la tabla `envios` si no existe.
+- Pantalla principal en `index.html` con API en `api.php`.
 
 ## Instalación
 
@@ -21,12 +22,8 @@ Aplicativo web sencillo para gestionar envíos.
    - Usuario
    - Clave
    - Base de datos
-4. Asegúrate de que la base de datos `xxxx_repoenvios` exista. El aplicativo crea la **tabla**, no la base de datos.
-5. Abre `index.php` desde el navegador.
-
-### Importante sobre las credenciales
-
-El archivo incluye los datos proporcionados en la solicitud. El host aparece como `mysql-…..` y el nombre/usuario como `xxxx`, por lo que debes sustituirlos por los valores exactos de tu proveedor si esos son datos abreviados.
+4. Asegúrate de que la base de datos `misaelgaray_repoenvios` exista. El aplicativo crea la **tabla**, no la base de datos.
+5. Abre `index.html` desde el navegador.
 
 ## Requisitos
 

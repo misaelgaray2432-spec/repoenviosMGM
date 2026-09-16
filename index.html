@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gestión de Envíos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+    <div>
+        <h1>Gestión de Envíos</h1>
+        <p>Administra destinatarios, direcciones y descripciones.</p>
+    </div>
+</header>
+
+<main class="container">
+    <div id="alerta" class="alert hidden"></div>
+
+    <section class="card">
+        <div class="card-title">
+            <h2 id="form-title">Nuevo envío</h2>
+            <button id="cancelar" class="btn secondary hidden" type="button">Cancelar</button>
+        </div>
+
+        <form id="envio-form" class="form-grid">
+            <input id="envio-id" type="hidden">
+
+            <label>
+                Destinatario
+                <input id="destinatario" type="text" maxlength="150" required
+                       placeholder="Nombre del destinatario">
+            </label>
+
+            <label>
+                Dirección
+                <input id="direccion" type="text" maxlength="255" required
+                       placeholder="Dirección de entrega">
+            </label>
+
+            <label class="full">
+                Descripción
+                <textarea id="descripcion" rows="4" required
+                          placeholder="Describe el contenido o las instrucciones del envío"></textarea>
+            </label>
+
+            <div class="full actions">
+                <button id="guardar" class="btn primary" type="submit">Registrar envío</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="card">
+        <div class="card-title">
+            <h2>Envíos registrados</h2>
+            <span id="contador" class="count">0 registro(s)</span>
+        </div>
+
+        <div id="estado-vacio" class="empty">No hay envíos registrados todavía.</div>
+
+        <div id="tabla-wrap" class="table-wrap hidden">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Destinatario</th>
+                    <th>Dirección</th>
+                    <th>Descripción</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody id="envios-body"></tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<script>
+const apiUrl = 'api.php';
+const form = document.getElementById('envio-form');
+const alerta = document.getElementById('alerta');
+const cancelar = document.getElementById('cancelar');
+const formTitle = document.getElementById('form-title');
+const guardar = document.getElementById('guardar');
+const envioId = document.getElementById('envio-id');
+const destinatario = document.getElementById('destinatario');
+const direccion = document.getElementById('direccion');
+const descripcion = document.getElementById('descripcion');
+const contador = document.getElementById('contador');
+const estadoVacio = document.getElementById('estado-vacio');
+const tablaWrap = document.getElementById('tabla-wrap');
+const enviosBody = document.getElementById('envios-body');
+
+let envios = [];
+
+function mostrarAlerta(tipo, mensaje) {
+    alerta.className = `alert ${tipo}`;
+    alerta.textContent = mensaje;
+}
+
+function limpiarAlerta() {
+    alerta.className = 'alert hidden';
+    alerta.textContent = '';
+}
+
+function escapar(valor) {
+    return String(valor ?? '').replace(/[&<>"']/g, caracter => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    }[caracter]));
+}
+
+function resetearFormulario() {
+    envioId.value = '';
+    form.reset();
+    formTitle.textContent = 'Nuevo envío';
+    guardar.textContent = 'Registrar envío';
+    cancelar.classList.add('hidden');
+}
+
+function pintarEnvios() {
+    contador.textContent = `${envios.length} registro(s)`;
+    estadoVacio.classList.toggle('hidden', envios.length > 0);
+    tablaWrap.classList.toggle('hidden', envios.length === 0);
+
+    enviosBody.innerHTML = envios.map(envio => `
+        <tr>
+            <td>${Number(envio.id)}</td>
+            <td><strong>${escapar(envio.destinatario)}</strong></td>
+            <td>${escapar(envio.direccion)}</td>
+            <td>${escapar(envio.descripcion).replace(/\n/g, '<br>')}</td>
+            <td>${escapar(envio.creado_en)}</td>
+            <td class="actions-cell">
+                <button class="btn small secondary" type="button" data-editar="${Number(envio.id)}">Editar</button>
+                <button class="btn small danger" type="button" data-eliminar="${Number(envio.id)}">Eliminar</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+async function solicitar(url, opciones = {}) {
+    const respuesta = await fetch(url, opciones);
+    const texto = await respuesta.text();
+    let datos;
+
+    try {
+        datos = texto ? JSON.parse(texto) : {};
+    } catch (error) {
+        throw new Error(texto || 'El servidor devolvió una respuesta inválida.');
+    }
+
+    if (!respuesta.ok || !datos.ok) {
+        throw new Error(datos.error || 'No se pudo completar la solicitud.');
+    }
+
+    return datos;
+}
+
+async function cargarEnvios() {
+    const datos = await solicitar(apiUrl);
+    envios = datos.envios || [];
+    pintarEnvios();
+}
+
+async function enviarAccion(payload) {
+    return solicitar(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+}
+
+form.addEventListener('submit', async event => {
+    event.preventDefault();
+
+    try {
+        const id = envioId.value;
+        const accion = id ? 'editar' : 'crear';
+        const datos = await enviarAccion({
+            accion,
+            id,
+            destinatario: destinatario.value,
+            direccion: direccion.value,
+            descripcion: descripcion.value
+        });
+
+        mostrarAlerta('success', datos.mensaje);
+        resetearFormulario();
+        await cargarEnvios();
+    } catch (error) {
+        mostrarAlerta('error', error.message);
+    }
+});
+
+cancelar.addEventListener('click', () => {
+    resetearFormulario();
+    limpiarAlerta();
+});
+
+enviosBody.addEventListener('click', async event => {
+    const editarId = event.target.dataset.editar;
+    const eliminarId = event.target.dataset.eliminar;
+
+    if (editarId) {
+        const envio = envios.find(item => Number(item.id) === Number(editarId));
+        if (!envio) return;
+
+        envioId.value = envio.id;
+        destinatario.value = envio.destinatario;
+        direccion.value = envio.direccion;
+        descripcion.value = envio.descripcion;
+        formTitle.textContent = 'Editar envío';
+        guardar.textContent = 'Guardar cambios';
+        cancelar.classList.remove('hidden');
+        destinatario.focus();
+        return;
+    }
+
+    if (eliminarId && confirm('¿Eliminar este envío?')) {
+        try {
+            const datos = await enviarAccion({ accion: 'eliminar', id: eliminarId });
+            mostrarAlerta('success', datos.mensaje);
+            await cargarEnvios();
+        } catch (error) {
+            mostrarAlerta('error', error.message);
+        }
+    }
+});
+
+cargarEnvios().catch(error => {
+    mostrarAlerta('error', error.message);
+});
+</script>
+</body>
+</html>

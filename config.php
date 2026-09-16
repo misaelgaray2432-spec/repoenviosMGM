@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$host = mysql-misaelgaray.alwaysdata.net'; // Reemplaza si tu proveedor te dio el host completo.
+$host = 'mysql-misaelgaray.alwaysdata.net'; // Reemplaza si tu proveedor te dio el host completo.
 $db   = 'misaelgaray_repoenvios';
 $user = 'misaelgaray';
 $pass = 'Mgm1927.';
