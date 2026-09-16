@@ -1,0 +1,84 @@
+:root {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #172033;
+    background: #f4f7fb;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+.topbar {
+    background: #172033;
+    color: white;
+    padding: 28px 20px;
+}
+.topbar h1 { margin: 0 0 6px; }
+.topbar p { margin: 0; opacity: .8; }
+.container { max-width: 1200px; margin: 28px auto; padding: 0 18px; }
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 22px;
+    box-shadow: 0 5px 20px rgba(20,35,60,.08);
+}
+.card-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+.card-title h2 { margin: 0; }
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+label { font-weight: 700; }
+input, textarea {
+    display: block;
+    width: 100%;
+    margin-top: 7px;
+    border: 1px solid #d5dbe6;
+    border-radius: 9px;
+    padding: 12px;
+    font: inherit;
+}
+textarea { resize: vertical; }
+.full { grid-column: 1 / -1; }
+.actions { display: flex; gap: 8px; }
+.btn {
+    display: inline-block;
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 15px;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 14px;
+}
+.primary { background: #2563eb; color: white; }
+.secondary { background: #e9eef7; color: #172033; }
+.danger { background: #dc2626; color: white; }
+.small { padding: 7px 10px; font-size: 12px; }
+.alert { padding: 13px 16px; border-radius: 9px; margin-bottom: 18px; }
+.success { background: #dcfce7; color: #166534; }
+.error { background: #fee2e2; color: #991b1b; }
+.count { color: #687386; font-size: 14px; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td {
+    text-align: left;
+    padding: 13px 10px;
+    border-bottom: 1px solid #e8ecf2;
+    vertical-align: top;
+}
+th { background: #f8fafc; }
+.actions-cell { white-space: nowrap; }
+.actions-cell form { display: inline; }
+.empty { padding: 30px; text-align: center; color: #687386; }
+
+@media (max-width: 720px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .full { grid-column: auto; }
+    .card-title { align-items: flex-start; flex-direction: column; }
+}

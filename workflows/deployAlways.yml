@@ -1,0 +1,29 @@
+name: 🚀 CLONOSAURIO
+
+on:
+   push:
+     branches:
+        - main
+
+jobs:
+  deploy:
+    name: 🎉 Trabajo de Despliegue
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚚 Obteniendo el código más reciente
+        uses: actions/checkout@v4
+
+      - name: 📂 Sincronizando archivos via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }} # Change if using another host
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_SERVER_DIR }} # Replace with your correct path
+          protocol: ftps
+          timeout: 86400000
+          log-level: standard
+          exclude: |
+           .git/**
+           .github/**
